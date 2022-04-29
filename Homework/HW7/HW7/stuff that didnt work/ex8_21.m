@@ -1,0 +1,20 @@
+clear variables; close all;
+Omegap = pi/3; 
+Omegas = pi/2; 
+deltap = 1; 
+deltas = .01;
+Lh = 50; 
+K = 10*Lh; 
+k = (0:K-1); 
+Omegak = k*2*pi/K;
+Q = (Omegak<=Omegap)/((deltap/2)^2)+(Omegak>=Omegas)/(deltas^2);
+Q(fix(K/2)+2:end) = Q(round(K/2):-1:2);
+Hd = 1.0*(Omegak<=Omegap).*exp(-1j*k*pi*(Lh-1)/K);
+Hd(fix(K/2)+2:end) = conj(Hd(round(K/2):-1:2));
+l = (0:Lh-1)'; a = exp(1j*l*Omegak)*Q.'/K; b = exp(1j*l*Omegak)*(Hd.*Q/K).';
+A = toeplitz(a); h = (A\b);
+n = (0:Lh-1)'; subplot(211); stem(n,h);
+Omega = linspace(0,pi,1001); H = polyval(h,exp(1j*Omega)).*exp(-1j*(Lh-1)*Omega);
+subplot(212); plot(Omega,abs(H));
+%hold on; plot(linspace(0,max(Omega),length(Hd)),abs(Hd),'k');
+

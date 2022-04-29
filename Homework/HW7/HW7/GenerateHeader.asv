@@ -1,0 +1,42 @@
+% ECE444 HW7
+% Fall 2020
+% Thomas Smallarz
+% 
+% B Matrix is FIR impulse response coef
+
+function [] = GenerateHeader(B,k)
+    fid = fopen('coef.h','w');
+    fprintf(fid,'#define K %d \n',length(B));
+    
+    % *******************************
+    % ***** CREATE B Coef Array *****
+    % *******************************
+    fprintf(fid,'uint16_t B[K] = {\n');
+        for i = 1:length(B)
+            if(mod(i,5)==0)
+                fprintf(fid,'\t%10.0f,\n',B(i)*k);
+            else
+               fprintf(fid,'\t%10.0f10.0,',B(i)*k);
+            end
+        end
+    fprintf(fid,'};\n\n');
+        
+    % *************************
+    % ***** CREATE BUFFER *****
+    % *************************
+    fprintf(fid,'uint16_t buf[K-1] = { \n');
+        for i = 1:length(B)-1
+            if mod(i,5)==0
+                fprintf(fid,'\t0u,\n');
+            else
+                fprintf(fid,'\t0u, ');
+            end
+        end
+    fprintf(fid,'};\n');
+    
+    fclose(fid);
+end
+
+
+
+
